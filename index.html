@@ -164,11 +164,11 @@ dialog::backdrop{background:rgba(17,31,52,.56);backdrop-filter:blur(3px)}
 
 /* ---------- Telefone ---------- */
 @media (max-width:640px){
-  .app{padding:10px}
-  .brand{padding:4px 4px 12px;gap:12px}
-  .brand-logo{width:clamp(60px,17vw,84px)}
-  .brand-title{font-size:clamp(17px,4.6vw,22px)}
-  .brand-sub{font-size:clamp(12px,3.4vw,15px)}
+  .app{padding:8px}
+  .brand{padding:2px 4px 8px;gap:10px}
+  .brand-logo{width:clamp(46px,13vw,60px)}
+  .brand-title{font-size:clamp(16px,4.4vw,21px)}
+  .brand-sub{font-size:clamp(11px,3.2vw,14px)}
   .start{padding:22px 16px 26px}
   h1{font-size:clamp(30px,9vw,50px)}
   .intro{font-size:clamp(15px,4vw,18px)}
@@ -178,16 +178,20 @@ dialog::backdrop{background:rgba(17,31,52,.56);backdrop-filter:blur(3px)}
   .flag{font-size:26px}
   .lang-name{font-size:17px}
   .lang-sub{font-size:12px}
-  .quiz-top{padding:13px 14px 12px}
+  .quiz-top{padding:9px 14px 9px}
   .progress-label,.score-label{font-size:13px}
-  .quiz-body{padding:18px 14px 20px}
-  .question{font-size:clamp(23px,6.4vw,34px)}
-  .answer{padding:13px 12px;font-size:clamp(15px,4.2vw,18px);gap:11px}
-  .answer .letter{width:34px;height:34px;font-size:15px}
-  .feedback{min-height:150px;padding:14px 14px}
-  .feedback-title{font-size:19px}
-  .correct-line,.explanation{font-size:15.5px}
-  .primary,.secondary{padding:12px 18px;font-size:15px}
+  .progress-track{margin-top:7px}
+  .quiz-body{padding:12px 13px 12px}
+  .question{font-size:clamp(20px,5.6vw,30px);margin-bottom:10px}
+  .answers{gap:7px}
+  .answer{padding:10px 12px;font-size:clamp(14px,4vw,17px);gap:10px}
+  .answer .letter{width:30px;height:30px;font-size:14px}
+  .feedback{min-height:0;padding:11px 13px}
+  .feedback-title{font-size:17px;margin-bottom:2px}
+  .correct-line{font-size:14.5px;margin-bottom:4px}
+  .explanation{font-size:14.5px}
+  .actions{padding-top:11px}
+  .primary,.secondary{padding:11px 17px;font-size:15px}
   .result{padding:24px 16px 28px}
   .result-score{width:132px;height:132px}
   .result-number{font-size:30px}
@@ -201,10 +205,10 @@ dialog::backdrop{background:rgba(17,31,52,.56);backdrop-filter:blur(3px)}
   .eval-status{width:26px;height:26px}
   .eval-body{padding:12px 12px 14px 46px;font-size:14.5px}
   [dir="rtl"] .eval-body{padding:12px 46px 14px 12px}
-  .ship-bow{width:112px;height:32px;top:-15px}
-  .harbor-footer{padding:34px 12px 14px;column-gap:10px;row-gap:9px;min-height:112px}
-  .footer-center{padding-left:40px;font-size:12.5px}
-  .footer-logo img{width:126px}
+  .ship-bow{width:96px;height:28px;top:-12px}
+  .harbor-footer{padding:22px 12px 10px;column-gap:10px;row-gap:6px;min-height:0}
+  .footer-center{padding-left:36px;font-size:12px}
+  .footer-logo img{width:112px}
 }
 @media (max-width:430px){
   .language-grid{grid-template-columns:1fr}
@@ -314,7 +318,8 @@ function setDirection(lang){const m=DATA.meta[lang];document.documentElement.lan
 function applyMeta(lang){const m=DATA.meta[lang];setDirection(lang);$('brandTitle').textContent=m.center;$('brandDept').textContent=m.dept;$('startTitle').textContent=m.title;$('startIntro').textContent=m.intro;$('chooseTitle').textContent=m.choose;$('sourceButton').textContent=m.sources;$('sourceTitle').textContent=m.sourceTitle;$('sourceText').textContent=m.sourceText;$('footerCenter').textContent=m.center+' · '+m.dept;$('dialogClose').setAttribute('aria-label',m.close);$('menuJumpButton').textContent=m.language;document.title=m.title+' · Hamburg'}
 function buildLanguages(){const grid=$('languageGrid');grid.innerHTML='';for(const lang of ORDER){const m=DATA.meta[lang];const b=document.createElement('button');b.className='language-button';b.type='button';b.lang=lang;b.dir=m.dir;b.innerHTML='<span class="flag" aria-hidden="true"></span><span class="lang-copy"><span class="lang-name"></span><span class="lang-sub"></span></span>';b.querySelector('.flag').textContent=m.flag||'🌐';b.querySelector('.lang-name').textContent=m.name;b.querySelector('.lang-sub').textContent=m.title;b.addEventListener('click',()=>startQuiz(lang));grid.appendChild(b)}}
 function show(which){for(const [key,node] of Object.entries(screens)){node.classList.toggle('is-visible',key===which)}}
-function startQuiz(lang){language=lang;index=0;score=0;answered=false;selectedAnswers=[];applyMeta(lang);show('quiz');renderQuestion();window.scrollTo({top:0,behavior:'smooth'})}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));const t=a[i];a[i]=a[j];a[j]=t}return a}
+function startQuiz(lang){language=lang;index=0;score=0;answered=false;selectedAnswers=[];shuffle(DATA.quiz[lang]);applyMeta(lang);show('quiz');renderQuestion();window.scrollTo({top:0,behavior:'smooth'})}
 function renderQuestion(){answered=false;const m=DATA.meta[language],questions=DATA.quiz[language],q=questions[index],total=questions.length;$('progressLabel').textContent=format(m.question,{current:index+1,total});$('scoreLabel').textContent=m.score+': '+score;$('progressTrack').setAttribute('aria-valuenow',index+1);$('progressBar').style.width=((index+1)/total*100)+'%';$('questionText').textContent=q.question;const wrap=$('answers');wrap.innerHTML='';q.options.forEach((text,i)=>{const b=document.createElement('button');b.type='button';b.className='answer';b.dataset.index=i;b.innerHTML='<span class="letter"></span><span class="answer-text"></span>';b.querySelector('.letter').textContent=LABELS[i];b.querySelector('.answer-text').textContent=text;b.addEventListener('click',()=>chooseAnswer(i));wrap.appendChild(b)});$('feedback').className='feedback';$('feedbackTitle').textContent='';$('correctLine').textContent='';$('explanation').textContent='';$('nextButton').hidden=true;$('nextButton').textContent=index===total-1?m.finish:m.next;setTimeout(()=>$('questionText').focus?.(),0)}
 function chooseAnswer(selected){if(answered)return;answered=true;const m=DATA.meta[language],q=DATA.quiz[language][index],buttons=[...document.querySelectorAll('.answer')],isCorrect=selected===q.correct;selectedAnswers[index]=selected;if(isCorrect)score++;buttons.forEach((b,i)=>{b.disabled=true;if(i===q.correct)b.classList.add('correct');else if(i===selected)b.classList.add('wrong');else b.classList.add('dim')});const f=$('feedback');f.className='feedback '+(isCorrect?'good':'bad');$('feedbackTitle').textContent=isCorrect?m.correct:m.incorrect;$('correctLine').textContent=format(m.correctAnswer,{letter:LABELS[q.correct]});$('explanation').textContent=q.explanation;$('scoreLabel').textContent=m.score+': '+score;$('nextButton').hidden=false;$('nextButton').focus()}
 function next(){if(!answered)return;const total=DATA.quiz[language].length;if(index<total-1){index++;renderQuestion();window.scrollTo({top:0,behavior:'smooth'})}else showResult()}
